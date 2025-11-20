@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>Laberstube - обо всём и не о чём</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='90' font-size='90'%3E🌃%3C/text%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .city-logo {
+            width: calc(100% - 30px);
+            height: 150px;
+            margin: 15px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), #001f3f;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .city-buildings {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 20px;
+            opacity: 0.4;
+        }
+
+        .building {
+            background: #ffd700;
+            width: 30px;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px 20px 15px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 25px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00a884, #06cf9c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard.active {
+            display: grid;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Медиаплеер */
+        .media-player {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .now-playing {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .radio-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .radio-station {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-station:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .radio-station.playing {
+            background: rgba(76, 175, 80, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Чат WhatsApp стиль */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            background: #0d1418;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #202c33;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #2a3942;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #0d1418;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            max-width: 70%;
+            animation: slideIn 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: #005c4b;
+            margin-left: auto;
+            border-radius: 8px 8px 0 8px;
+        }
+
+        .message.bot {
+            background: #202c33;
+            border-radius: 8px 8px 8px 0;
+        }
+
+        .message-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-file {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .message-file:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .chat-input-wrapper {
+            background: #202c33;
+            padding: 12px;
+            border-top: 1px solid #2a3942;
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            max-height: 70px;
+            overflow-y: auto;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .emoji:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.2);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #2a3942;
+            color: white;
+            font-size: 1em;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.3);
+            background: #374955;
+        }
+
+        .chat-input button {
+            padding: 12px 16px;
+            min-width: auto;
+        }
+
+        /* Галерея */
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .upload-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 45px;
+            cursor: pointer;
+            z-index: 10001;
+            line-height: 1;
+            font-weight: normal;
+        }
+
+        .modal-close:hover {
+            color: #ccc;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+        }
+
+        .modal-content img,
+        .modal-content video,
+        .modal-content audio {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+
+        .auth-modal .modal-content {
+            background: rgba(30, 30, 50, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .auth-form h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .form-buttons button {
+            flex: 1;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .switch-form a {
+            color: #4CAF50;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .city-logo { height: 120px; }
+            h1 { font-size: 1.6em; }
+            .subtitle { font-size: 0.9em; }
+            .dashboard { grid-template-columns: 1fr; }
+            .chat-container { height: 450px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+            .controls button { min-width: 100px; }
+        }
+
+        @media (max-width: 480px) {
+            .city-logo { height: 100px; }
+            h1 { font-size: 1.4em; }
+            .card { padding: 15px; }
+            .auth-modal .modal-content { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="city-logo">
+        <div class="city-buildings">
+            <div class="building" style="height: 75px;"></div>
+            <div class="building" style="height: 95px;"></div>
+            <div class="building" style="height: 65px;"></div>
+            <div class="building" style="height: 105px;"></div>
+            <div class="building" style="height: 80px;"></div>
+            <div class="building" style="height: 90px;"></div>
+            <div class="building" style="height: 70px;"></div>
+            <div class="building" style="height: 100px;"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="auth-section">
+                <div id="authButtons" class="auth-buttons">
+                    <button onclick="showLogin()">🔑 Вход</button>
+                    <button onclick="showRegister()">📝 Регистрация</button>
+                </div>
+                <div id="userInfo" class="user-info" style="display: none;">
+                    <div class="chat-avatar">👤</div>
+                    <div>
+                        <span id="username"></span>
+                        <span id="adminBadge"></span>
+                    </div>
+                    <button onclick="logout()">🚪</button>
+                </div>
+            </div>
+            <h1>Laberstube</h1>
+            <p class="subtitle">обо всём и не о чём</p>
+        </header>
+
+        <div id="dashboard" class="dashboard">
+            <div class="card">
+                <h2>🎵 Медиаплеер</h2>
+                <div class="media-player">
+                    <div class="mode-tabs">
+                        <button class="tab active" onclick="switchMode('audio')">🎵 Аудио</button>
+                        <button class="tab" onclick="switchMode('radio')">📻 Радио</button>
+                    </div>
+                    <div class="now-playing" id="nowPlaying">Выберите файл или станцию</div>
+                    
+                    <div id="audioMode">
+                        <input type="file" id="audioInput" accept="audio/*">
+                        <div class="controls">
+                            <button onclick="document.getElementById('audioInput').click()">📁 Загрузить</button>
+                            <button onclick="playPauseAudio()" id="playBtn">▶️ Play</button>
+                            <button onclick="stopAudio()">⏹️ Stop</button>
+                        </div>
+                    </div>
+                    
+                    <div id="radioMode" style="display: none;">
+                        <div class="radio-list" id="radioList"></div>
+                        <button onclick="stopRadio()" style="width: 100%; margin-top: 10px;">⏹️ Остановить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💬 Чат</h2>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 1.1em;">Бот-помощник</div>
+                            <div style="font-size: 0.8em; opacity: 0.7;">онлайн</div>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-wrapper">
+                        <div class="emoji-picker" id="emojiPicker"></div>
+                        <div class="chat-input">
+                            <input type="file" id="chatFileInput" accept="audio/*,video/*,image/*">
+                            <button onclick="document.getElementById('chatFileInput').click()">📎</button>
+                            <input type="text" id="messageInput" placeholder="Сообщение">
+                            <button onclick="sendMessage()">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🖼️ Галерея</h2>
+                <div class="gallery-container">
+                    <div class="upload-controls">
+                        <input type="file" id="photoInput" accept="image/*">
+                        <input type="file" id="videoInput" accept="video/*">
+                        <button onclick="document.getElementById('photoInput').click()">📷 Добавить фото</button>
+                        <button onclick="document.getElementById('videoInput').click()">🎥 Добавить видео</button>
+                    </div>
+                    <div class="gallery-grid" id="galleryGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="mediaModal">
+        <span class="modal-close" onclick="closeMediaModal()">&times;</span>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <div class="modal auth-modal" id="loginModal">
+        <div class="modal-content">
+            <h2>🔑 Вход</h2>
+            <div class="form-group">
+                <label>Логин:</label>
+                <input type="text" id="loginUser" placeholder="Введите логин">
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="loginPassword" placeholder="Введите пароль">
+            </div>
+            <div class="form-buttons">
+                <button onclick="login()">Войти</button>
+                <button onclick="closeAuthModal()">Отмена</button>
+            </div>
+            <div class="switch-form">
+                Нет аккаунта? <a onclick="switchToRegister()">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal auth-modal" id="registerModal">
+        <div class="modal-content">
+            <h2>📝 Регистрация</h2>
+            <div class="form-group">
+                <label>Имя:</label>
+                <input type="text" id="registerName" placeholder="Ваше имя">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="registerEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Логин:</label>
+                <input type="text" id="registerUser" placeholder="Придумайте логин">
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="registerPassword" placeholder="Минимум 6 символов">
+            </div>
+            <div class="form-buttons">
+                <button onclick="register()">Зарегистрироваться</button>
+                <button onclick="closeAuthModal()">Отмена</button>
+            </div>
+            <div class="switch-form">
+                Есть аккаунт? <a onclick="switchToLogin()">Войти</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const radioStations = [
+            { name: "Европа Плюс", url: "https://ep256.hostingradio.ru:8052/europaplus256.mp3" },
+            { name: "Radio Record", url: "https://radiorecord.hostingradio.ru/rr_main96.aacp" },
+            { name: "Дорожное Радио", url: "https://dorognoe.hostingradio.ru/radio" },
+            { name: "Русское Радио", url: "https://rusradio.hostingradio.ru/rusradio96.aacp" },
+            { name: "Energy FM", url: "https://pub0302.101.ru:8443/stream/air/aac/64/99" },
+            { name: "Relax FM", url: "https://relaxfm.hostingradio.ru/relax128.mp3" },
+            { name: "Record Club", url: "https://radiorecord.hostingradio.ru/club96.aacp" },
+            { name: "DFM", url: "https://dfm.hostingradio.ru/dfm96.aacp" },
+            { name: "Авторадио", url: "https://pub0101.101.ru:8443/stream/air/aac/64/100" },
+            { name: "Ретро FM", url: "https://retro.hostingradio.ru:8043/retro128.mp3" },
+            { name: "Хит FM", url: "https://hitfm.hostingradio.ru/hitfm96.aacp" },
+            { name: "Love Radio", url: "https://loveradio.hostingradio.ru/loveradio128.mp3" },
+            { name: "Радио Jazz", url: "https://jazz.hostingradio.ru/jazz96.aacp" },
+            { name: "Радио Шансон", url: "https://chanson.hostingradio.ru:8041/chanson128.mp3" },
+            { name: "Comedy Radio", url: "https://pub0101.101.ru:8443/stream/reg/mp3/128/region_comedy_3" },
+            { name: "Радио Maximum", url: "https://maximum.hostingradio.ru/maximum96.aacp" },
+            { name: "Record Dubstep", url: "https://radiorecord.hostingradio.ru/dub96.aacp" },
+            { name: "Record Trap", url: "https://radiorecord.hostingradio.ru/trap96.aacp" },
+            { name: "Record Trance", url: "https://radiorecord.hostingradio.ru/tm96.aacp" },
+            { name: "Record Breaks", url: "https://radiorecord.hostingradio.ru/brks96.aacp" },
+            { name: "Радио Romantika", url: "https://romantika.hostingradio.ru:8041/romantika128.mp3" },
+            { name: "Радио Monte Carlo", url: "https://montecarlo.hostingradio.ru/mc_main96.aacp" },
+            { name: "Радио Эхо Москвы", url: "https://echo.hostingradio.ru:8041/echo128.mp3" },
+            { name: "Радио Книга", url: "https://listen.radiobook.ru/audiobook128.mp3" },
+            { name: "Детское Радио", url: "https://detskoefm.hostingradio.ru/detskoefm128.mp3" }
+        ];
+
+        let audioPlayer = new Audio();
+        let currentRadioIndex = -1;
+        let currentMode = 'audio';
+        let currentUser = null;
+        let users = [];
+        let galleryItems = [];
+        const emojis = ['😊', '😂', '❤️', '👍', '🔥', '✨', '🎉', '💯', '🤔', '😎', '🙌', '💪', '🎵', '🎶', '📷', '🎥', '💬', '✅'];
+
+        function initApp() {
+            loadUsers();
+            checkAuth();
+            initRadioList();
+            initEmojiPicker();
+            setupEventListeners();
+            addMessage('Привет! 👋 Чем могу помочь?', false);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('audioInput').addEventListener('change', loadAudioFile);
+            document.getElementById('chatFileInput').addEventListener('change', sendFileMessage);
+            document.getElementById('photoInput').addEventListener('change', addPhoto);
+            document.getElementById('videoInput').addEventListener('change', addVideo);
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+            
+            audioPlayer.addEventListener('ended', function() {
+                document.getElementById('playBtn').textContent = '▶️ Play';
+            });
+        }
+
+        function loadUsers() {
+            const stored = localStorage.getItem('laberstubeUsers');
+            if (stored) {
+                users = JSON.parse(stored);
+            } else {
+                users = [{
+                    username: 'jeffri74',
+                    password: 'jeffri1974',
+                    name: 'Administrator',
+                    email: 'admin@laberstube.com',
+                    isAdmin: true
+                }];
+                localStorage.setItem('laberstubeUsers', JSON.stringify(users));
+            }
+        }
+
+        function saveUsers() {
+            localStorage.setItem('laberstubeUsers', JSON.stringify(users));
+        }
+
+        function checkAuth() {
+            const stored = localStorage.getItem('laberstubeCurrentUser');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+                showUserInfo();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('active');
+            setTimeout(() => document.getElementById('loginUser').focus(), 100);
+        }
+
+        function showRegister() {
+            document.getElementById('registerModal').classList.add('active');
+            setTimeout(() => document.getElementById('registerName').focus(), 100);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('registerModal').classList.remove('active');
+        }
+
+        function switchToRegister() {
+            closeAuthModal();
+            setTimeout(() => showRegister(), 150);
+        }
+
+        function switchToLogin() {
+            closeAuthModal();
+            setTimeout(() => showLogin(), 150);
+        }
+
+        function login() {
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                alert('Заполните все поля');
+                return;
+            }
+
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = {
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    isAdmin: user.isAdmin || false
+                };
+
+                localStorage.setItem('laberstubeCurrentUser', JSON.stringify(currentUser));
+                showUserInfo();
+                closeAuthModal();
+                
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPassword').value = '';
+                
+                alert(currentUser.isAdmin ? '🎉 Добро пожаловать, Администратор!' : `Добро пожаловать, ${currentUser.name}!`);
+            } else {
+                alert('Неверный логин или пароль');
+            }
+        }
+
+        function register() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const username = document.getElementById('registerUser').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            if (!name || !email || !username || !password) {
+                alert('Заполните все поля');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Пароль должен содержать минимум 6 символов');
+                return;
+            }
+
+            if (users.find(u => u.username === username)) {
+                alert('Пользователь с таким логином уже существует');
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                alert('Email уже зарегистрирован');
+                return;
+            }
+
+            const newUser = {
+                username: username,
+                password: password,
+                name: name,
+                email: email,
+                isAdmin: false
+            };
+
+            users.push(newUser);
+            saveUsers();
+            
+            alert('✅ Регистрация успешна! Теперь вы можете войти.');
+            
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerUser').value = '';
+            document.getElementById('registerPassword').value = '';
+            
+            closeAuthModal();
+            setTimeout(() => showLogin(), 300);
+        }
+
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                currentUser = null;
+                localStorage.removeItem('laberstubeCurrentUser');
+                document.getElementById('userInfo').style.display = 'none';
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('dashboard').classList.remove('active');
+                alert('Вы вышли из системы');
+            }
+        }
+
+        function showUserInfo() {
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('username').textContent = currentUser.name;
+            
+            if (currentUser.isAdmin) {
+                document.getElementById('adminBadge').innerHTML = '<span class="admin-badge">ADMIN</span>';
+            }
+            
+            document.getElementById('dashboard').classList.add('active');
+        }
+
+        function initRadioList() {
+            const radioList = document.getElementById('radioList');
+            radioStations.forEach((station, index) => {
+                const stationEl = document.createElement('div');
+                stationEl.className = 'radio-station';
+                stationEl.innerHTML = `<strong>${station.name}</strong>`;
+                stationEl.onclick = () => playRadio(index);
+                radioList.appendChild(stationEl);
+            });
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            if (mode === 'audio') {
+                tabs[0].classList.add('active');
+                document.getElementById('audioMode').style.display = 'block';
+                document.getElementById('radioMode').style.display = 'none';
+                stopRadio();
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('audioMode').style.display = 'none';
+                document.getElementById('radioMode').style.display = 'block';
+                stopAudio();
+            }
+        }
+
+        function loadAudioFile(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                audioPlayer.src = url;
+                document.getElementById('nowPlaying').textContent = `🎵 ${file.name}`;
+                document.getElementById('playBtn').textContent = '▶️ Play';
+            }
+        }
+
+        function playPauseAudio() {
+            if (!audioPlayer.src) {
+                alert('Сначала загрузите аудиофайл');
+                return;
+            }
+            
+            if (audioPlayer.paused) {
+                audioPlayer.play().catch(err => {
+                    console.error('Ошибка воспроизведения:', err);
+                    alert('Не удалось воспроизвести файл');
+                });
+                document.getElementById('playBtn').textContent = '⏸️ Pause';
+            } else {
+                audioPlayer.pause();
+                document.getElementById('playBtn').textContent = '▶️ Play';
+            }
+        }
+
+        function stopAudio() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            document.getElementById('playBtn').textContent = '▶️ Play';
+        }
+
+        function playRadio(index) {
+            const station = radioStations[index];
+            
+            if (currentRadioIndex !== -1) {
+                document.querySelectorAll('.radio-station')[currentRadioIndex].classList.remove('playing');
+            }
+            
+            audioPlayer.src = station.url;
+            audioPlayer.play().catch(err => {
+                console.error('Ошибка радио:', err);
+                alert('Не удалось подключиться к радиостанции');
+            });
+            
+            currentRadioIndex = index;
+            document.querySelectorAll('.radio-station')[index].classList.add('playing');
+            document.getElementById('nowPlaying').textContent = `📻 ${station.name}`;
+        }
+
+        function stopRadio() {
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            
+            if (currentRadioIndex !== -1) {
+                document.querySelectorAll('.radio-station')[currentRadioIndex].classList.remove('playing');
+                currentRadioIndex = -1;
+            }
+            
+            document.getElementById('nowPlaying').textContent = 'Радио остановлено';
+        }
+
+        function initEmojiPicker() {
+            const picker = document.getElementById('emojiPicker');
+            emojis.forEach(emoji => {
+                const emojiEl = document.createElement('span');
+                emojiEl.className = 'emoji';
+                emojiEl.textContent = emoji;
+                emojiEl.onclick = () => {
+                    const input = document.getElementById('messageInput');
+                    input.value += emoji;
+                    input.focus();
+                };
+                picker.appendChild(emojiEl);
+            });
+        }
+
+        function addMessage(text, isUser, file = null) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            
+            const time = new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+            
+            let content = text;
+            if (file) {
+                const fileType = file.type.split('/')[0];
+                const fileName = file.name || 'файл';
+                
+                if (fileType === 'audio') {
+                    content += `<div class="message-file" onclick="playMessageFile('${file.url}', 'audio')">🎵 ${fileName}</div>`;
+                } else if (fileType === 'video') {
+                    content += `<div class="message-file" onclick="playMessageFile('${file.url}', 'video')">🎥 ${fileName}</div>`;
+                } else if (fileType === 'image') {
+                    content += `<div class="message-file" onclick="playMessageFile('${file.url}', 'image')">🖼️ ${fileName}</div>`;
+                }
+            }
+            
+            messageDiv.innerHTML = `${content}<div class="message-time">${time}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function playMessageFile(url, type) {
+            const modal = document.getElementById('mediaModal');
+            const content = document.getElementById('modalContent');
+            
+            if (type === 'audio') {
+                content.innerHTML = `<audio src="${url}" controls autoplay style="width: 100%; max-width: 500px;"></audio>`;
+            } else if (type === 'video') {
+                content.innerHTML = `<video src="${url}" controls autoplay></video>`;
+            } else if (type === 'image') {
+                content.innerHTML = `<img src="${url}" alt="Изображение">`;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function sendFileMessage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const fileType = file.type.split('/')[0];
+                
+                let message = '';
+                if (fileType === 'audio') message = 'Отправил аудио:';
+                else if (fileType === 'video') message = 'Отправил видео:';
+                else if (fileType === 'image') message = 'Отправил изображение:';
+                
+                addMessage(message, true, { url: url, name: file.name, type: file.type });
+                
+                setTimeout(() => {
+                    addMessage('Получил ваш файл! 👍', false);
+                }, 700);
+                
+                event.target.value = '';
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (text) {
+                addMessage(text, true);
+                input.value = '';
+                
+                setTimeout(() => {
+                    const responses = [
+                        'Понял вас! 👍',
+                        'Интересно! 🤔',
+                        'Отлично! ✨',
+                        'Хорошая мысль! 💡',
+                        'Согласен! 😊',
+                        'Понятно! 👌',
+                        'Классно! 🎉',
+                        'Супер! 💯',
+                        'Замечательно! 🙌',
+                        'Круто! 🔥'
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, false);
+                }, 600);
+            }
+        }
+
+        function addPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    galleryItems.push({
+                        type: 'image',
+                        src: e.target.result,
+                        id: Date.now()
+                    });
+                    renderGallery();
+                };
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+        }
+
+        function addVideo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    galleryItems.push({
+                        type: 'video',
+                        src: e.target.result,
+                        id: Date.now()
+                    });
+                    renderGallery();
+                };
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+            
+            galleryItems.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'gallery-item';
+                
+                if (item.type === 'image') {
+                    itemEl.innerHTML = `
+                        <img src="${item.src}" alt="Фото" onclick="openGalleryModal('${item.src}', 'image')">
+                        <button class="delete-btn" onclick="deleteItem(event, ${item.id})">✕</button>
+                    `;
+                } else {
+                    itemEl.innerHTML = `
+                        <video src="${item.src}" onclick="openGalleryModal('${item.src}', 'video')"></video>
+                        <button class="delete-btn" onclick="deleteItem(event, ${item.id})">✕</button>
+                    `;
+                }
+                
+                grid.appendChild(itemEl);
+            });
+        }
+
+        function deleteItem(event, id) {
+            event.stopPropagation();
+            if (confirm('Удалить этот элемент?')) {
+                galleryItems = galleryItems.filter(item => item.id !== id);
+                renderGallery();
+            }
+        }
+
+        function openGalleryModal(src, type) {
+            const modal = document.getElementById('mediaModal');
+            const content = document.getElementById('modalContent');
+            
+            if (type === 'image') {
+                content.innerHTML = `<img src="${src}" alt="Полный размер">`;
+            } else {
+                content.innerHTML = `<video src="${src}" controls autoplay></video>`;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeMediaModal() {
+            const modal = document.getElementById('mediaModal');
+            modal.classList.remove('active');
+            
+            const content = document.getElementById('modalContent');
+            const videos = content.querySelectorAll('video');
+            const audios = content.querySelectorAll('audio');
+            
+            videos.forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
+            audios.forEach(a => {
+                a.pause();
+                a.currentTime = 0;
+            });
+            
+            content.innerHTML = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
