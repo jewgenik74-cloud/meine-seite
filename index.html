@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="format-detection" content="telephone=no">
+    <title>Laberstube - обо всём и не о чём</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='90' font-size='90'%3E🌃%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='90' font-size='90'%3E🌃%3C/text%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background-attachment: fixed;
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            touch-action: pan-y;
+        }
+
+        .city-logo {
+            width: calc(100% - 30px);
+            height: 160px;
+            margin: 15px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), #001f3f;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .city-buildings {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 20px;
+            opacity: 0.4;
+        }
+
+        .building {
+            background: #ffd700;
+            width: 30px;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px 20px 15px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard.active {
+            display: grid;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        button:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .media-player {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 5px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .now-playing {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .radio-list {
+            max-height: 280px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .radio-station {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .radio-station:active {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .radio-station.playing {
+            background: rgba(76, 175, 80, 0.4);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+            background: #0d1418;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #202c33;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #2a3942;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00a884, #06cf9c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 15px;
+            background: #0d1418;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 75%;
+            animation: slideIn 0.3s;
+            word-wrap: break-word;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: #005c4b;
+            margin-left: auto;
+            border-radius: 8px 8px 0 8px;
+        }
+
+        .message.bot {
+            background: #202c33;
+            border-radius: 8px 8px 8px 0;
+        }
+
+        .message-time {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .message-file {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-file:active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-input-wrapper {
+            background: #202c33;
+            padding: 10px;
+            border-top: 1px solid #2a3942;
+        }
+
+        .emoji-picker {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            max-height: 60px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .emoji {
+            font-size: 1.4em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .emoji:active {
+            transform: scale(1.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #2a3942;
+            color: white;
+            font-size: 16px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            outline: none;
+            background: #374955;
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 8px;
+            max-height: 320px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .gallery-item:active {
+            opacity: 0.8;
+        }
+
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            padding: 0;
+        }
+
+        .upload-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: max(20px, env(safe-area-inset-top));
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 10000;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 85vh;
+        }
+
+        .modal-content img, .modal-content video, .modal-content audio {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+
+        .auth-modal .modal-content {
+            background: rgba(30, 30, 50, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .auth-form h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
+            flex: 1;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+
+        .switch-form a {
+            color: #4CAF50;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .city-logo { height: 130px; }
+            h1 { font-size: 1.5em; }
+            .subtitle { font-size: 0.85em; }
+            .dashboard { grid-template-columns: 1fr; }
+            .chat-container { height: 400px; }
+        }
+
+        @media (max-width: 480px) {
+            .city-logo { height: 110px; }
+            h1 { font-size: 1.3em; }
+            .card { padding: 15px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="city-logo">
+        <div class="city-buildings">
+            <div class="building" style="height: 80px;"></div>
+            <div class="building" style="height: 100px;"></div>
+            <div class="building" style="height: 70px;"></div>
+            <div class="building" style="height: 110px;"></div>
+            <div class="building" style="height: 85px;"></div>
+            <div class="building" style="height: 95px;"></div>
+            <div class="building" style="height: 75px;"></div>
+            <div class="building" style="height: 105px;"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="auth-section">
+                <div id="authButtons" class="auth-buttons">
+                    <button onclick="showLogin()">🔑 Вход</button>
+                    <button onclick="showRegister()">📝 Регистрация</button>
+                </div>
+                <div id="userInfo" class="user-info" style="display: none;">
+                    <div class="chat-avatar">👤</div>
+                    <div>
+                        <span id="username"></span>
+                        <span id="adminBadge"></span>
+                    </div>
+                    <button onclick="logout()">🚪</button>
+                </div>
+            </div>
+            <h1>Laberstube</h1>
+            <p class="subtitle">обо всём и не о чём</p>
+        </header>
+
+        <div id="dashboard" class="dashboard">
+            <div class="card">
+                <h2>🎵 Медиаплеер</h2>
+                <div class="media-player">
+                    <div class="mode-tabs">
+                        <button class="tab active" onclick="switchMode('audio')">🎵 Аудио</button>
+                        <button class="tab" onclick="switchMode('radio')">📻 Радио</button>
+                    </div>
+                    <div class="now-playing" id="nowPlaying">Выберите файл или станцию</div>
+                    
+                    <div id="audioMode">
+                        <input type="file" id="audioInput" accept="audio/*">
+                        <div class="controls">
+                            <button onclick="document.getElementById('audioInput').click()">📁 Загрузить</button>
+                            <button onclick="playPauseAudio()" id="playBtn">▶️ Play</button>
+                            <button onclick="stopAudio()">⏹️ Stop</button>
+                        </div>
+                    </div>
+                    
+                    <div id="radioMode" style="display: none;">
+                        <div class="radio-list" id="radioList"></div>
+                        <button onclick="stopRadio()" style="width: 100%;">⏹️ Остановить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>💬 Чат</h2>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-avatar">🤖</div>
+                        <div>
+                            <div style="font-weight: 600;">Бот-помощник</div>
+                            <div style="font-size: 0.75em; opacity: 0.7;">онлайн</div>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-wrapper">
+                        <div class="emoji-picker" id="emojiPicker"></div>
+                        <div class="chat-input">
+                            <input type="file" id="chatFileInput" accept="audio/*,video/*,image/*">
+                            <button onclick="document.getElementById('chatFileInput').click()">📎</button>
+                            <input type="text" id="messageInput" placeholder="Сообщение">
+                            <button onclick="sendMessage()">📤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🖼️ Галерея</h2>
+                <div class="gallery-container">
+                    <div class="upload-controls">
+                        <input type="file" id="photoInput" accept="image/*">
+                        <input type="file" id="videoInput" accept="video/*">
+                        <button onclick="document.getElementById('photoInput').click()">📷 Фото</button>
+                        <button onclick="document.getElementById('videoInput').click()">🎥 Видео</button>
+                    </div>
+                    <div class="gallery-grid" id="galleryGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="mediaModal">
+        <span class="modal-close" onclick="closeMediaModal()">&times;</span>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <div class="modal auth-modal" id="loginModal">
+        <div class="modal-content">
+            <h2>🔑 Вход</h2>
+            <div class="form-group">
+                <label>Логин:</label>
+                <input type="text" id="loginUser" placeholder="Введите логин" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="loginPassword" placeholder="Введите пароль" autocomplete="current-password">
+            </div>
+            <div class="form-buttons">
+                <button onclick="login()">Войти</button>
+                <button onclick="closeAuthModal()">Отмена</button>
+            </div>
+            <div class="switch-form">
+                Нет аккаунта? <a onclick="switchToRegister()">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal auth-modal" id="registerModal">
+        <div class="modal-content">
+            <h2>📝 Регистрация</h2>
+            <div class="form-group">
+                <label>Имя:</label>
+                <input type="text" id="registerName" placeholder="Ваше имя" autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="registerEmail" placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Логин:</label>
+                <input type="text" id="registerUser" placeholder="Придумайте логин" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="registerPassword" placeholder="Минимум 6 символов" autocomplete="new-password">
+            </div>
+            <div class="form-buttons">
+                <button onclick="register()">Регистрация</button>
+                <button onclick="closeAuthModal()">Отмена</button>
+            </div>
+            <div class="switch-form">
+                Есть аккаунт? <a onclick="switchToLogin()">Войти</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const radioStations = [
+            { name: "Европа Плюс", url: "https://ep256.hostingradio.ru:8052/europaplus256.mp3" },
+            { name: "Radio Record", url: "https://radiorecord.hostingradio.ru/rr_main96.aacp" },
+            { name: "Дорожное Радио", url: "https://dorognoe.hostingradio.ru/radio" },
+            { name: "Русское Радио", url: "https://rusradio.hostingradio.ru/rusradio96.aacp" },
+            { name: "Energy FM", url: "https://pub0302.101.ru:8443/stream/air/aac/64/99" },
+            { name: "Relax FM", url: "https://relaxfm.hostingradio.ru/relax128.mp3" },
+            { name: "Record Club", url: "https://radiorecord.hostingradio.ru/club96.aacp" },
+            { name: "DFM", url: "https://dfm.hostingradio.ru/dfm96.aacp" },
+            { name: "Авторадио", url: "https://pub0101.101.ru:8443/stream/air/aac/64/100" },
+            { name: "Ретро FM", url: "https://retro.hostingradio.ru:8043/retro128.mp3" },
+            { name: "Хит FM", url: "https://hitfm.hostingradio.ru/hitfm96.aacp" },
+            { name: "Love Radio", url: "https://loveradio.hostingradio.ru/loveradio128.mp3" },
+            { name: "Радио Jazz", url: "https://jazz.hostingradio.ru/jazz96.aacp" },
+            { name: "Радио Шансон", url: "https://chanson.hostingradio.ru:8041/chanson128.mp3" },
+            { name: "Comedy Radio", url: "https://pub0101.101.ru:8443/stream/reg/mp3/128/region_comedy_3" },
+            { name: "Радио Maximum", url: "https://maximum.hostingradio.ru/maximum96.aacp" },
+            { name: "Радио Рекорд Dubstep", url: "https://radiorecord.hostingradio.ru/dub96.aacp" },
+            { name: "Радио Рекорд Trap", url: "https://radiorecord.hostingradio.ru/trap96.aacp" },
+            { name: "Радио Рекорд Trance", url: "https://radiorecord.hostingradio.ru/tm96.aacp" },
+            { name: "Радио Рекорд Breaks", url: "https://radiorecord.hostingradio.ru/brks96.aacp" }
+        ];
+
+        let audioPlayer = new Audio();
+        audioPlayer.addEventListener('ended', function() {
+            document.getElementById('playBtn').textContent = '▶️ Play';
+        });
+
+        let currentRadioIndex = -1;
+        let currentMode = 'audio';
+        let currentUser = null;
+        let users = [];
+        let galleryItems = [];
+        const emojis = ['😊', '😂', '❤️', '👍', '🔥', '✨', '🎉', '💯', '🤔', '😎', '🙌', '💪', '🎵', '🎶', '📷', '🎥'];
+
+        function initApp() {
+            loadUsers();
+            checkAuth();
+            initRadioList();
+            initEmojiPicker();
+            setupFileInputs();
+            addMessage('Привет! 👋 Чем могу помочь?', false);
+        }
+
+        function setupFileInputs() {
+            document.getElementById('audioInput').addEventListener('change', loadAudioFile);
+            document.getElementById('chatFileInput').addEventListener('change', sendFileMessage);
+            document.getElementById('photoInput').addEventListener('change', addPhoto);
+            document.getElementById('videoInput').addEventListener('change', addVideo);
+            
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+
+        function loadUsers() {
+            const stored = localStorage.getItem('laberstubeUsers');
+            if (stored) {
+                users = JSON.parse(stored);
+            } else {
+                users = [{ username: 'jeffri74', password: 'jeffri1974', name: 'Admin', email: 'admin@laberstube.com', isAdmin: true }];
+                localStorage.setItem('laberstubeUsers', JSON.stringify(users));
+            }
+        }
+
+        function saveUsers() {
+            localStorage.setItem('laberstubeUsers', JSON.stringify(users));
+        }
+
+        function checkAuth() {
+            const stored = localStorage.getItem('laberstubeCurrentUser');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+                showUserInfo();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showRegister() {
+            document.getElementById('registerModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('registerModal').classList.remove('active');
+        }
+
+        function switchToRegister() {
+            closeAuthModal();
+            setTimeout(() => showRegister(), 100);
+        }
+
+        function switchToLogin() {
+            closeAuthModal();
+            setTimeout(() => showLogin(), 100);
+        }
+
+        function login() {
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                alert('Заполните все поля');
+                return;
+            }
+
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = {
+                    username: user.username,
+                    name: user.name,
+                    email: user.email,
+                    isAdmin: user.isAdmin || false
+                };
+
+                localStorage.setItem('laberstubeCurrentUser', JSON.
